@@ -1,0 +1,13 @@
+
+package com.example.room_service.repository;
+
+import com.example.room_service.entity.Room;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface RoomRepository extends JpaRepository<Room, Long> {
+
+    // Kiểm tra mã phòng đã tồn tại hay chưa
+    boolean existsByRoomCode(String roomCode);
+}
