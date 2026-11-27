@@ -7,6 +7,7 @@ import com.example.room_service.entity.Room;
 import com.example.room_service.exception.DuplicateResourceException;
 import com.example.room_service.exception.ResourceNotFoundException;
 import com.example.room_service.repository.RoomRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    // Chuyển Entity Room thành DTO RoomResponse
+    // Chuyen Entity Room thanh DTO RoomResponse
     private RoomResponse convertToResponse(Room room) {
         return new RoomResponse(
                 room.getId(),
@@ -34,7 +35,7 @@ public class RoomService {
         );
     }
 
-    // Chuyển DTO RoomRequest thành Entity Room
+    // Chuyen DTO RoomRequest thanh Entity Room
     private Room convertToEntity(RoomRequest request) {
         Room room = new Room();
 
@@ -48,7 +49,7 @@ public class RoomService {
         return room;
     }
 
-    // Lấy danh sách phòng
+    // Lay danh sach phong
     public List<RoomResponse> getAllRooms() {
         return roomRepository.findAll()
                 .stream()
@@ -56,24 +57,24 @@ public class RoomService {
                 .toList();
     }
 
-    // Lấy phòng theo ID
+    // Lay phong theo ID
     public RoomResponse getRoomById(Long id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Không tìm thấy phòng trọ có ID: " + id
+                                "Khong tim thay phong tro co ID: " + id
                         )
                 );
 
         return convertToResponse(room);
     }
 
-    // Thêm phòng mới
+    // Them phong moi
     public RoomResponse createRoom(RoomRequest request) {
 
         if (roomRepository.existsByRoomCode(request.getRoomCode())) {
             throw new DuplicateResourceException(
-                    "Mã phòng " + request.getRoomCode() + " đã tồn tại!"
+                    "Ma phong " + request.getRoomCode() + " da ton tai!"
             );
         }
 
@@ -83,13 +84,13 @@ public class RoomService {
         return convertToResponse(savedRoom);
     }
 
-    // Cập nhật phòng
+    // Cap nhat thong tin phong
     public RoomResponse updateRoom(Long id, RoomRequest request) {
 
         Room room = roomRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Không tìm thấy phòng trọ có ID: " + id
+                                "Khong tim thay phong tro co ID: " + id
                         )
                 );
 
@@ -97,7 +98,7 @@ public class RoomService {
                 && roomRepository.existsByRoomCode(request.getRoomCode())) {
 
             throw new DuplicateResourceException(
-                    "Mã phòng " + request.getRoomCode() + " đã tồn tại!"
+                    "Ma phong " + request.getRoomCode() + " da ton tai!"
             );
         }
 
@@ -113,13 +114,30 @@ public class RoomService {
         return convertToResponse(updatedRoom);
     }
 
-    // Xóa phòng
+    // Cap nhat trang thai phong
+    public RoomResponse updateRoomStatus(Long id, String status) {
+
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Khong tim thay phong tro co ID: " + id
+                        )
+                );
+
+        room.setStatus(status);
+
+        Room updatedRoom = roomRepository.save(room);
+
+        return convertToResponse(updatedRoom);
+    }
+
+    // Xoa phong
     public void deleteRoom(Long id) {
 
         Room room = roomRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Không tìm thấy phòng trọ có ID: " + id
+                                "Khong tim thay phong tro co ID: " + id
                         )
                 );
 

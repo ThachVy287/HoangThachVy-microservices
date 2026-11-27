@@ -93,6 +93,9 @@ public class ContractService {
         // Luu hop dong vao database
         Contract savedContract = contractRepository.save(contract);
 
+        // Cap nhat trang thai phong thanh RENTED
+        roomClient.updateRoomStatus(room.getId(), "RENTED");
+
         // Tra ve thong tin hop dong
         return convertToResponse(savedContract, room, tenant);
     }
@@ -141,7 +144,20 @@ public class ContractService {
                         new RuntimeException(
                                 "Khong tim thay hop dong co ID: " + id));
 
+        Long roomId = contract.getRoomId();
+
+        // Xoa hop dong trong database
         contractRepository.delete(contract);
+
+        // Kiem tra con hop dong ACTIVE nao cua phong khong
+        boolean hasActiveContract =
+                contractRepository.existsByRoomIdAndStatus(
+                        roomId, "ACTIVE");
+
+        // Neu khong con hop dong ACTIVE thi mo lai phong
+        if (!hasActiveContract) {
+            roomClient.updateRoomStatus(roomId, "AVAILABLE");
+        }
     }
 
     // Tao ma hop dong tu dong

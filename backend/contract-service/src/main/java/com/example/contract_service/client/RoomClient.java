@@ -25,4 +25,14 @@ public class RoomClient {
                 .retrieve()
                 .body(RoomResponse.class);
     }
+
+    // Cap nhat trang thai phong trong Room Service
+    public RoomResponse updateRoomStatus(Long roomId, String status) {
+
+        return roomRestClient.patch()
+                .uri("/api/rooms/{id}/status", roomId)
+                .body(java.util.Map.of("status", status))
+                .retrieve()
+                .body(RoomResponse.class);
+    }
 }
