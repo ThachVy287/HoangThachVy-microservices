@@ -1,7 +1,8 @@
 
 package com.example.tenant_service.controller;
 
-import com.example.tenant_service.entity.Tenant;
+import com.example.tenant_service.dto.TenantRequest;
+import com.example.tenant_service.dto.TenantResponse;
 import com.example.tenant_service.service.TenantService;
 
 import jakarta.validation.Valid;
@@ -23,17 +24,17 @@ public class TenantController {
         this.tenantService = tenantService;
     }
 
-    // API lay danh sach nguoi thue
+    // Lay danh sach tat ca nguoi thue
     @GetMapping
-    public ResponseEntity<List<Tenant>> getAllTenants() {
+    public ResponseEntity<List<TenantResponse>> getAllTenants() {
         return ResponseEntity.ok(
                 tenantService.getAllTenants()
         );
     }
 
-    // API tim nguoi thue theo ID
+    // Tim nguoi thue theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Tenant> getTenantById(
+    public ResponseEntity<TenantResponse> getTenantById(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
@@ -41,30 +42,30 @@ public class TenantController {
         );
     }
 
-    // API them nguoi thue
+    // Them nguoi thue moi
     @PostMapping
-    public ResponseEntity<Tenant> createTenant(
-            @Valid @RequestBody Tenant tenant) {
+    public ResponseEntity<TenantResponse> createTenant(
+            @Valid @RequestBody TenantRequest request) {
 
-        Tenant newTenant = tenantService.createTenant(tenant);
+        TenantResponse response =
+                tenantService.createTenant(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(newTenant);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
-    // API cap nhat nguoi thue
+    // Cap nhat thong tin nguoi thue
     @PutMapping("/{id}")
-    public ResponseEntity<Tenant> updateTenant(
+    public ResponseEntity<TenantResponse> updateTenant(
             @PathVariable Long id,
-            @Valid @RequestBody Tenant tenant) {
+            @Valid @RequestBody TenantRequest request) {
 
         return ResponseEntity.ok(
-                tenantService.updateTenant(id, tenant)
+                tenantService.updateTenant(id, request)
         );
     }
 
-    // API xoa nguoi thue
+    // Xoa nguoi thue
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTenant(
             @PathVariable Long id) {
